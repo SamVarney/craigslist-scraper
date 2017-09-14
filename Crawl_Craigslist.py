@@ -1,4 +1,5 @@
 from craigslist import CraigslistHousing
+from email_password import EMAIL_PASSWORD
 
 ''' **************BELOW ARE THE FILTERS THAT THE SCRAPER ACCEPTS************
 
@@ -32,25 +33,31 @@ extra_filters = {
 
 '''
 
+'''**************CRAWL CRAIGSLIST FILTER SETTINGS*************************************'''
+ZIPCODES_TO_SEARCH = [94063, 94061, 94027]
+POSTED_TODAY = True
+MINIMUM_RENT = 2000
+MAXIMUM_RENT = 3400
+MINIMUM_BEDROOMS = 2
+POSTED_TODAY = True  # (either True or None)
+RESULTS_FILE_NAME = 'redwoodcity_new housing.txt'
+'''**********END OF SETTINGS (CAN ADD MORE FILTERS TO THE REQUEST)***************'''
+
+SEND_EMAIL_FROM_ADDRESS = 'samuel.j.varney@gmail.com'
+EMAIL_TO_LIST = ['samvarney@me.com']  # A list of addresses to send results too
+gmail_password = EMAIL_PASSWORD
+
 
 def crawl():
-    '''**************CRAWL CRAIGSLIST SETTINGS*************************************'''
-    redwoodcity_zipcodes = {94063, 94061, 94027}
-    posted_today = True
-    minimum_rent = 2000
-    maximum_rent = 3400
-    minimum_bedrooms = 2
-    posted_today = True #(either True or None)
-    fileName = 'redwoodcity_new housing.txt'
-    '''**********END OF SETTINGS (CAN ADD MORE FILTERS TO THE REQUEST)***************'''
-
-    result_file = open(fileName, 'w')
+    result_file = open(RESULTS_FILE_NAME, 'w')
     num_results = 0
 
-    for zipcode in redwoodcity_zipcodes:
+    for zipcode in ZIPCODES_TO_SEARCH:
         cl_h = CraigslistHousing(site='sfbay', area='pen', category='apa',
-                                 filters={'min_price': minimum_rent, 'max_price': maximum_rent, 'private_room': True, 'has_image': True,
-                                          'min_bedrooms': minimum_bedrooms, 'zip_code': zipcode, 'posted_today': posted_today})
+                                 filters={'min_price': MINIMUM_RENT, 'max_price': MAXIMUM_RENT, 'private_room': True,
+                                          'has_image': True,
+                                          'min_bedrooms': MINIMUM_BEDROOMS, 'zip_code': zipcode,
+                                          'posted_today': POSTED_TODAY})
 
 
         for result in cl_h.get_results(sort_by='newest', geotagged=True):
@@ -65,27 +72,22 @@ def crawl():
 
     result_file.close()
 
-    contents = open(fileName, 'r').read()
+    contents = open(RESULTS_FILE_NAME, 'r').read()
     print(contents)
 
-    return fileName, num_results
+    return RESULTS_FILE_NAME, num_results
 
 
 # send results
-def send_results(fileName, num_results):
+def send_results(RESULTS_FILE_NAME, num_results):
 
     import smtplib
 
-    gmail_user = 'samuel.j.varney@gmail.com'
-    gmail_password = 'Saemsaem22'
-    to = ['samvarney@me.com'] #A list of addresses to send results too
+    sent_from = SEND_EMAIL_FROM_ADDRESS
 
+    subject = str(num_results) + ' New Houses Posted Today - Scraper Bot'
 
-    sent_from = gmail_user
-
-    subject = str(num_results) + ' New Redwood City Houses Posted Today - Sams Scraper Bot'
-
-    body = open(fileName, 'r').read() #Open the results file that the scraper saved
+    body = open(RESULTS_FILE_NAME, 'r').read()  # Open the results file that the scraper saved
 
     #construct email text
     email_text = """\
@@ -93,7 +95,7 @@ From:%s
 To:%s  
 Subject:%s
 %s
-""" % (sent_from, ", ".join(to), subject, body)
+""" % (sent_from, ", ".join(EMAIL_TO_LIST), subject, body)
 
     print(email_text)
 
@@ -104,8 +106,8 @@ Subject:%s
         server.ehlo()
         server.set_debuglevel(2)
 
-        server.login(gmail_user, gmail_password)
-        server.sendmail(sent_from, to, email_text)
+        server.login(SEND_EMAIL_FROM_ADDRESS, gmail_password)
+        server.sendmail(sent_from, EMAIL_TO_LIST, email_text)
         print('Email sent!')
 
     except smtplib.SMTPException:

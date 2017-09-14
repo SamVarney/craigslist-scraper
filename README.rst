@@ -1,0 +1,1 @@
+Crawl craigslist for properties given a list of zipcodes.
