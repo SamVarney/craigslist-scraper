@@ -15,7 +15,7 @@ from requests.exceptions import RequestException
 from six import iteritems
 from six.moves import range
 
-from sites import get_all_sites
+from .sites import get_all_sites
 
 ALL_SITES = get_all_sites()  # All the Craiglist sites
 RESULTS_PER_REQUEST = 100  # Craigslist returns 100 results per request
