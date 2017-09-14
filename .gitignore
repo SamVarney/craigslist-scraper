@@ -9,6 +9,6 @@ eggs
 sdist
 develop-eggs
 .installed.cfg
-.idea
+*.idea
 pip-log.txt
 .DS_Store
