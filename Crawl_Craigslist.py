@@ -1,6 +1,20 @@
 from craigslist import CraigslistHousing
 from email_password import EMAIL_PASSWORD
 
+#**************CRAWL CRAIGSLIST FILTER SETTINGS*************************************
+ZIPCODES_TO_SEARCH = [94063, 94061, 94027] #it will search only the zip codes in this list
+POSTED_TODAY = True
+MINIMUM_RENT = 2000
+MAXIMUM_RENT = 3400
+MINIMUM_BEDROOMS = 2
+POSTED_TODAY = True  # (either True or None)
+RESULTS_FILE_NAME = 'redwoodcity_new housing.txt'
+#**********END OF SETTINGS (CAN ADD MORE FILTERS TO THE REQUEST, see above for the options)***************
+
+SEND_EMAIL_FROM_ADDRESS = 'testEmail@gmail.com'
+EMAIL_TO_LIST = ['samvarney@me.com']  # A list of addresses to send results too
+gmail_password = EMAIL_PASSWORD #stored in separate python file
+
 ''' **************BELOW ARE THE FILTERS THAT THE SCRAPER ACCEPTS************
 
         base_filters = {
@@ -30,20 +44,6 @@ extra_filters = {
         'wheelchair_acccess': {'url_key': 'wheelchaccess', 'value': 1},
         }
 '''
-
-#**************CRAWL CRAIGSLIST FILTER SETTINGS*************************************
-ZIPCODES_TO_SEARCH = [94063, 94061, 94027]
-POSTED_TODAY = True
-MINIMUM_RENT = 2000
-MAXIMUM_RENT = 3400
-MINIMUM_BEDROOMS = 2
-POSTED_TODAY = True  # (either True or None)
-RESULTS_FILE_NAME = 'redwoodcity_new housing.txt'
-#**********END OF SETTINGS (CAN ADD MORE FILTERS TO THE REQUEST, see above for the options)***************
-
-SEND_EMAIL_FROM_ADDRESS = 'testEmail@gmail.com'
-EMAIL_TO_LIST = ['samvarney@me.com']  # A list of addresses to send results too
-gmail_password = EMAIL_PASSWORD #stored in separate python file
 
 
 def crawl():
